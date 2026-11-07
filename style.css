@@ -1,0 +1,87 @@
+body { display: flex; flex-direction: column; overflow: hidden; }
+:root { --code-size: 13px; --code-line: 1.5; }
+
+/* menu bar */
+.menubar { display: flex; align-items: center; gap: 4px; padding: 4px 8px; background: var(--panel); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.menubar .appname { margin-right: 8px; }
+.menu { position: relative; }
+.menu > button { border: none; background: none; min-height: 36px; }
+.menu.open > button { background: color-mix(in srgb, var(--accent) 15%, transparent); }
+.menu .items { display: none; position: absolute; top: 100%; left: 0; z-index: 10000; min-width: 230px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 4px; box-shadow: 0 8px 24px rgb(0 0 0 / 18%); }
+.menu.open .items { display: block; }
+.menu .items button { display: flex; width: 100%; justify-content: space-between; gap: 16px; border: none; background: none; min-height: 36px; text-align: left; }
+.menu .items button:hover { background: color-mix(in srgb, var(--accent) 15%, transparent); }
+.menu .items .key { color: var(--quiet); font-size: 12px; }
+.menu .items hr { border: none; border-top: 1px solid var(--line); margin: 4px 0; }
+
+/* find bar */
+.findbar { display: grid; gap: 6px; padding: 8px; background: var(--panel); border-bottom: 1px solid var(--line); }
+.findbar input[type='search'], .findbar input[type='text'] { flex: 1; min-width: 140px; min-height: 36px; }
+.findbar label { color: var(--quiet); font-size: 13px; white-space: nowrap; }
+.findbar button, .findbar select { min-height: 36px; }
+ul.results { list-style: none; margin: 0; padding: 0; max-height: 30vh; overflow: auto; border: 1px solid var(--line); border-radius: 8px; }
+ul.results li { padding: 4px 8px; cursor: pointer; font: 12.5px/1.4 var(--mono); white-space: pre; overflow: hidden; text-overflow: ellipsis; }
+ul.results li:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+ul.results li .where { color: var(--accent); }
+
+/* desktop and windows */
+.tabs { display: none; }
+.desktop { position: relative; flex: 1; overflow: hidden; }
+.emptyhint { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; }
+.win { position: absolute; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 6px 24px rgb(0 0 0 / 12%); overflow: hidden; resize: both; min-width: 280px; min-height: 160px; }
+.win.active { border-color: var(--accent); box-shadow: 0 8px 30px rgb(0 0 0 / 20%); }
+.titlebar { display: flex; align-items: center; gap: 8px; padding: 4px 6px 4px 12px; background: var(--bg); border-bottom: 1px solid var(--line); cursor: grab; user-select: none; touch-action: none; }
+.titlebar .title { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.titlebar .title .dot { color: var(--accent); }
+.titlebar button { min-height: 30px; padding: 0 10px; border: none; background: none; }
+.code { position: relative; flex: 1; display: flex; min-height: 0; background: var(--bg); }
+.gutter { width: 52px; flex: none; overflow: hidden; padding: 10px 8px 10px 0; text-align: right; color: var(--quiet); font: var(--code-size) / var(--code-line) var(--mono); white-space: pre; border-right: 1px solid var(--line); user-select: none; }
+.layers { position: relative; flex: 1; min-width: 0; }
+.layers pre, .layers textarea {
+  position: absolute; inset: 0; margin: 0; padding: 10px; border: 0;
+  font: var(--code-size) / var(--code-line) var(--mono); tab-size: 4; white-space: pre; overflow-wrap: normal; letter-spacing: 0;
+}
+.layers pre { overflow: hidden; pointer-events: none; color: var(--ink); }
+.layers textarea { overflow: auto; resize: none; background: transparent; color: transparent; caret-color: var(--ink); outline: none; }
+.layers textarea::selection { background: color-mix(in srgb, var(--accent) 30%, transparent); color: transparent; }
+.statusbar { display: flex; gap: 12px; padding: 3px 10px; font-size: 12px; color: var(--quiet); border-top: 1px solid var(--line); background: var(--panel); white-space: nowrap; overflow: hidden; }
+.statusbar .path { flex: 1; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+.statusbar .warn { color: var(--bad); }
+
+/* tokens */
+.t-comment { color: #7d8b7d; font-style: italic; }
+.t-string { color: #a0522d; }
+.t-atom { color: #8b4c9e; }
+.t-number { color: #1c7c74; }
+.t-var { color: #2f6fd6; }
+.t-keyword { color: #b03060; font-weight: 600; }
+.t-functor { color: #6a4c00; }
+.t-tag { color: #b03060; }
+.t-attr { color: #6a4c00; }
+.t-entity { color: #1c7c74; }
+.t-heading { color: #2f6fd6; font-weight: 700; }
+.t-code { color: #a0522d; }
+.t-strong { font-weight: 700; }
+.t-link { color: #2f6fd6; text-decoration: underline; }
+@media (prefers-color-scheme: dark) {
+  .t-comment { color: #8fa08f; } .t-string, .t-code { color: #e0a070; } .t-atom { color: #d39be6; } .t-number, .t-entity { color: #5fc9bf; }
+  .t-var, .t-heading, .t-link { color: #7fb0ff; } .t-keyword, .t-tag { color: #ff7aa2; } .t-functor, .t-attr { color: #e6c46a; }
+}
+
+/* file dialog */
+dialog { border: 1px solid var(--line); border-radius: 12px; padding: 0; width: min(640px, 96vw); background: var(--panel); color: var(--ink); }
+dialog::backdrop { background: rgb(0 0 0 / 35%); }
+.dialogform { display: grid; gap: 10px; padding: 16px; }
+.dialogform h2 { margin: 0; font-size: 17px; }
+.fdlist { height: min(50vh, 420px); border: 1px solid var(--line); border-radius: 8px; }
+.dialogform #fdName { flex: 1; }
+
+/* phones and narrow windows: one window at a time, tabs to switch */
+@media (max-width: 760px) {
+  .tabs { display: flex; gap: 4px; padding: 4px 8px; overflow-x: auto; background: var(--panel); border-bottom: 1px solid var(--line); }
+  .tabs button { min-height: 36px; white-space: nowrap; }
+  .tabs button.active { border-color: var(--accent); }
+  .win { position: absolute; inset: 0 !important; width: auto !important; height: auto !important; border-radius: 0; resize: none; display: none; }
+  .win.active { display: flex; }
+  .titlebar { cursor: default; }
+}

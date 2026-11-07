@@ -1,0 +1,10 @@
+{
+  "name": "iedit",
+  "version": "0.1.0",
+  "description": "iEdit: multi-window web text editor for the LucianOS suite",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "license": "BSD-3-Clause"
+}

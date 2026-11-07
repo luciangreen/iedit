@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>iEdit</title>
+  <link rel="stylesheet" href="/shared/style.css">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <nav id="menubar" class="menubar" aria-label="Menu">
+    <strong class="appname">iEdit</strong>
+    <div class="menu" data-menu="file"><button>File</button><div class="items"></div></div>
+    <div class="menu" data-menu="edit"><button>Edit</button><div class="items"></div></div>
+    <div class="menu" data-menu="view"><button>View</button><div class="items"></div></div>
+    <div class="menu" data-menu="window"><button>Window</button><div class="items"></div></div>
+    <span class="spacer"></span>
+    <span id="notice" class="status quiet"></span>
+  </nav>
+
+  <section id="findbar" class="findbar hidden" aria-label="Find and replace">
+    <div class="row">
+      <input id="findText" type="search" class="mono" placeholder="Find" aria-label="Find">
+      <input id="replaceText" type="text" class="mono" placeholder="Replace with" aria-label="Replace with">
+      <label><input id="optCase" type="checkbox"> Same case</label>
+      <label><input id="optWord" type="checkbox"> Words only</label>
+      <label><input id="optRegex" type="checkbox"> Regex</label>
+      <select id="regexHelp" aria-label="Insert regular expression" class="hidden"><option value="">Insert…</option></select>
+    </div>
+    <div class="row">
+      <select id="scope" aria-label="Where to search">
+        <option value="file">This file</option>
+        <option value="open">All open files</option>
+        <option value="folder">Files in a folder</option>
+      </select>
+      <input id="scopeFolder" type="text" class="mono hidden" placeholder="Folder (inside the suite folder)">
+      <input id="scopePattern" type="text" class="mono hidden" value="*.pl, *.txt, *.md" aria-label="File names">
+      <button id="findPrev">Previous</button>
+      <button id="findNext" class="primary">Next</button>
+      <button id="findAll">Find all</button>
+      <button id="replaceOne">Replace</button>
+      <button id="replaceAll">Replace all</button>
+      <span id="findStatus" class="status quiet"></span>
+      <span class="spacer"></span>
+      <button id="findClose" aria-label="Close find">✕</button>
+    </div>
+    <ul id="findResults" class="results hidden"></ul>
+  </section>
+
+  <div id="tabs" class="tabs"></div>
+  <main id="desktop" class="desktop">
+    <div id="empty" class="emptyhint quiet">Open a file with File ▸ Open (⌘O), or make a new one with File ▸ New.</div>
+  </main>
+
+  <dialog id="fileDialog">
+    <form method="dialog" class="dialogform">
+      <h2 id="fdTitle">Open</h2>
+      <div class="row">
+        <select id="fdRecent" aria-label="Recent folders"><option value="">Recent folders…</option></select>
+        <div id="fdCrumbs" class="crumbs"></div>
+      </div>
+      <ul id="fdList" class="files fdlist"></ul>
+      <div class="row">
+        <input id="fdName" type="text" class="mono" placeholder="File name">
+        <button id="fdNewFolder" type="button">New folder</button>
+      </div>
+      <p id="fdError" class="error"></p>
+      <div class="row">
+        <span class="spacer"></span>
+        <button value="cancel" formnovalidate>Cancel</button>
+        <button id="fdOk" class="primary" value="ok">Open</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>
