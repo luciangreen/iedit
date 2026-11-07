@@ -13,7 +13,7 @@ git clone https://github.com/luciangreen/iedit
 
 Start the platform (`npm start` in `lucianos`) and open http://localhost:4170/apps/iedit/
 
-To open files straight away: `/apps/iedit/?open=path/to/file.pl&open=other.md&line=12`
+To open files straight away: `/apps/iedit/?open=path/to/file.pl&open=other.md&line=12`. The LucianOS desktop opens text files in iEdit, and further files go to the same iEdit window.
 
 ## What it does
 

@@ -796,6 +796,12 @@ window.addEventListener('beforeunload', () => {
   fetch('/api/state/iedit', { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-LucianOS': '1' }, body, keepalive: true });
 });
 
+// LucianOS desktop (same origin) asks iEdit to open files: { type: 'iedit.open', path, line }
+window.addEventListener('message', (e) => {
+  if (e.origin !== location.origin || e.data?.type !== 'iedit.open' || typeof e.data.path !== 'string') return;
+  openPath(e.data.path, { line: parseInt(e.data.line, 10) || undefined });
+});
+
 // ======================= start =======================
 async function init() {
   buildMenu('file', MENUS.file);
