@@ -837,7 +837,9 @@ function markDropTarget(w) {
   w?.root.classList.add('drop-target');
 }
 
-async function insertFiles(paths, x, y) {
+async function insertFiles(paths, x, y, from) {
+  // tell the desktop the files arrived (it warns when an older iEdit stays silent)
+  from?.postMessage({ type: 'iedit.inserted', count: paths.length }, location.origin);
   const w = windowAt(x, y);
   markDropTarget(null);
   if (!w) {
@@ -880,7 +882,7 @@ window.addEventListener('message', (e) => {
   } else if (d.type === 'iedit.dragLeave') {
     markDropTarget(null);
   } else if (d.type === 'iedit.insertFiles' && Array.isArray(d.paths) && d.paths.every((p) => typeof p === 'string')) {
-    insertFiles(d.paths.slice(0, 50), d.x, d.y);
+    insertFiles(d.paths.slice(0, 50), d.x, d.y, e.source);
   }
 });
 
