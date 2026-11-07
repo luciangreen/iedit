@@ -1,5 +1,6 @@
 // iEdit: multi-window text editor for the LucianOS suite.
 import { api } from '/shared/api.js';
+import { dropPosition, dropText, offsetAtPoint, unsuitable } from './lib/drop.js';
 import { countStats, highlight, languageFor } from './lib/highlight.js';
 import { REGEX_HELPERS, buildRegex, fileMatcher, findAll, replaceAll, replaceAt } from './lib/search.js';
 
@@ -800,6 +801,87 @@ window.addEventListener('beforeunload', () => {
 window.addEventListener('message', (e) => {
   if (e.origin !== location.origin || e.data?.type !== 'iedit.open' || typeof e.data.path !== 'string') return;
   openPath(e.data.path, { line: parseInt(e.data.line, 10) || undefined });
+});
+
+// ======================= files dragged in from LucianOS =======================
+// The desktop sends iedit.dragOver {x, y} while files are dragged over iEdit, then
+// iedit.insertFiles {paths, x, y} on the drop. The contents go in where they're dropped.
+function windowAt(x, y) {
+  const node = document.elementFromPoint(x, y)?.closest('.win');
+  return windows.find((w) => w.root === node) ?? null;
+}
+
+function offsetFor(w, x, y) {
+  const ta = w.ta;
+  const cs = getComputedStyle(ta);
+  const r = ta.getBoundingClientRect();
+  const ctx = (offsetFor.canvas ??= document.createElement('canvas')).getContext('2d');
+  ctx.font = `${cs.fontSize} ${cs.fontFamily}`;
+  return offsetAtPoint(ta.value, {
+    x: x - r.left,
+    y: y - r.top,
+    lineHeight: parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.5,
+    charWidth: ctx.measureText('0'.repeat(50)).width / 50,
+    tabSize: parseInt(cs.tabSize, 10) || 4,
+    padLeft: parseFloat(cs.paddingLeft),
+    padTop: parseFloat(cs.paddingTop),
+    scrollLeft: ta.scrollLeft,
+    scrollTop: ta.scrollTop
+  });
+}
+
+let dropTarget = null;
+function markDropTarget(w) {
+  if (dropTarget && dropTarget !== w) dropTarget.root.classList.remove('drop-target');
+  dropTarget = w;
+  w?.root.classList.add('drop-target');
+}
+
+async function insertFiles(paths, x, y) {
+  const w = windowAt(x, y);
+  markDropTarget(null);
+  if (!w) {
+    // not over a window: open each file in its own
+    for (const p of paths) await openPath(p);
+    return;
+  }
+  const files = [];
+  for (const p of paths) {
+    try {
+      const f = await api.files.read(p);
+      const why = unsuitable(f);
+      if (why) notice(`Left out ${p.split('/').pop()}: ${why}`, 'error');
+      else files.push(f);
+    } catch (err) {
+      notice(`Could not read ${p}: ${err.message}`, 'error');
+    }
+  }
+  if (!files.length) return;
+  const { at, prefix } = dropPosition(w.ta.value, offsetFor(w, x, y));
+  w.focus();
+  w.ta.setSelectionRange(at, at);
+  insertText(w.ta, prefix + dropText(files));
+  w.ta.dispatchEvent(new Event('input'));
+  notice(files.length === 1 ? `Put ${files[0].path.split('/').pop()} in` : `Put ${files.length} files in`);
+}
+
+window.addEventListener('message', (e) => {
+  if (e.origin !== location.origin) return;
+  const d = e.data ?? {};
+  if (d.type === 'iedit.dragOver' && Number.isFinite(d.x) && Number.isFinite(d.y)) {
+    const w = windowAt(d.x, d.y);
+    markDropTarget(w);
+    if (w) {
+      // show where the text will go
+      const { at } = dropPosition(w.ta.value, offsetFor(w, d.x, d.y));
+      w.ta.focus({ preventScroll: true });
+      w.ta.setSelectionRange(at, at);
+    }
+  } else if (d.type === 'iedit.dragLeave') {
+    markDropTarget(null);
+  } else if (d.type === 'iedit.insertFiles' && Array.isArray(d.paths) && d.paths.every((p) => typeof p === 'string')) {
+    insertFiles(d.paths.slice(0, 50), d.x, d.y);
+  }
 });
 
 // ======================= start =======================

@@ -27,6 +27,12 @@ To open files straight away: `/apps/iedit/?open=path/to/file.pl&open=other.md&li
   - Options: same case, words only, and regular expressions.
   - A helper menu inserts common patterns, such as or, not followed by, and groups, which you use as `$1` in Replace.
   - **Find all** lists matches by file and line.
+- **Files dragged in from LucianOS:** drop file icons from the desktop or a folder window on an iEdit window to put their contents into it.
+  - **Where it goes:** the window you're over is outlined while you drag, and the cursor moves to show where the text will go. It goes in as whole lines, at the line you drop on. A drop mid-line goes in at the next line, so no line is split.
+  - **Several files** go in one after another, in the order you selected them.
+  - **Undo:** ⌘Z takes it all out again.
+  - **Elsewhere in iEdit:** dropped outside a window, the files open in windows of their own.
+  - **Left out:** binary files and files over 2 MB, with a message saying so.
 - **Coding view:** line numbers, colours for Prolog, Markdown, HTML and JavaScript, Tab, keeping indentation on Enter, and Go to line.
   - The status bar shows the line and column, and counts characters, words, lines and the selection.
   - Click the file path in the status bar to browse its folder.
@@ -37,7 +43,6 @@ To open files straight away: `/apps/iedit/?open=path/to/file.pl&open=other.md&li
 From the plan:
 
 - Diff of two files.
-- Dropping LucianOS file icons in to join them (like `cat`).
 - Dictionary underlines and autocomplete.
 - ⌘-click the title to jump to a folder in LucianOS.
 - Larger touch selection controls.
