@@ -33,9 +33,10 @@ function notice(text, kind = 'quiet') {
 
 // ======================= Editor window =======================
 class EditorWindow {
-  constructor({ path = null, text = '', mtimeMs = null, dirty = false, geometry = null, cursor = 0, title = null }) {
+  constructor({ path = null, text = '', mtimeMs = null, id = null, dirty = false, geometry = null, cursor = 0, title = null }) {
     this.path = path;
     this.mtimeMs = mtimeMs;
+    this.id = id; // the file's identity on disk: LucianOS finds it with this after a rename in the Finder
     this.dirty = dirty;
     this.untitled = title ?? (path ? null : `Untitled ${++untitledCount}`);
     this.lang = languageFor(path ?? '');
@@ -224,12 +225,17 @@ class EditorWindow {
       if (!path) return false;
     }
     try {
-      const info = await api.files.write(path, this.ta.value, path === this.path && !force ? { baseMtime: this.mtimeMs } : { force: true });
-      const moved = path !== this.path;
+      const same = path === this.path;
+      const info = await api.files.write(path, this.ta.value, same && !force ? { baseMtime: this.mtimeMs, id: this.id } : { force: true, ...(same ? { id: this.id } : {}) });
+      // moved: saved under a new name, or the file had been renamed or moved (in the Finder,
+      // say) and LucianOS saved it where it is now
+      const moved = info.path !== this.path;
       if (moved && this.path) unwatchFolder(dirOf(this.path));
-      if (moved) watchFolder(dirOf(path));
+      if (moved) watchFolder(dirOf(info.path));
+      if (info.movedFrom) notice(`${nameOf(info.movedFrom)} had been moved to ${info.path}, so it was saved there`);
       this.path = info.path;
       this.mtimeMs = info.mtimeMs;
+      this.id = info.id ?? null;
       this.lang = languageFor(this.path);
       this.changedOnDisk = false;
       this.setDirty(false);
@@ -237,11 +243,16 @@ class EditorWindow {
       this.renderTitle();
       rememberFolder(dirOf(this.path));
       saveSession();
-      notice(`Saved ${this.path}`, 'ok');
+      if (!info.movedFrom) notice(`Saved ${this.path}`, 'ok');
       return true;
     } catch (err) {
       if (err.status === 409) {
         if (confirm(`${nameOf(path)} changed on disk since you opened it. Overwrite it with your version?`)) return this.save({ force: true });
+        return false;
+      }
+      // its folder was deleted or moved somewhere LucianOS could not find
+      if (err.status === 404 && !as) {
+        if (confirm(`${err.message}\n\nChoose where to save it?`)) return this.save({ as: true });
         return false;
       }
       notice(`Could not save: ${err.message}`, 'error');
@@ -249,9 +260,36 @@ class EditorWindow {
     }
   }
 
+  // The file was renamed or moved outside iEdit: take the new name.
+  followTo(newPath) {
+    const old = this.path;
+    if (!newPath || newPath === old) return;
+    unwatchFolder(dirOf(old));
+    watchFolder(dirOf(newPath));
+    this.path = newPath;
+    this.lang = languageFor(newPath);
+    this.refresh();
+    this.renderTitle();
+    saveSession();
+    notice(`${nameOf(old)} is now ${newPath}`);
+  }
+
   async reloadFromDisk() {
     if (!this.path) return;
-    const f = await api.files.read(this.path);
+    let f;
+    try {
+      f = await api.files.read(this.path, { id: this.id });
+    } catch (err) {
+      // deleted, or moved where it could not be found: keep the text, and say so
+      if (err.status === 404) {
+        this.changedOnDisk = true;
+        this.updateStatus();
+        notice(`${nameOf(this.path)} is not on disk any more. Your text is still here: save it to keep it.`);
+      }
+      return;
+    }
+    if (f.movedFrom) this.followTo(f.path);
+    this.id = f.id ?? this.id;
     if (f.mtimeMs === this.mtimeMs) return;
     if (this.dirty) {
       this.changedOnDisk = true;
@@ -297,6 +335,7 @@ class EditorWindow {
       path: this.path,
       untitled: this.untitled,
       mtimeMs: this.mtimeMs,
+      id: this.id,
       dirty: this.dirty,
       text: this.dirty || !this.path ? this.ta.value : undefined, // unsaved work survives closing the page
       cursor: this.ta.selectionStart,
@@ -318,7 +357,7 @@ function addWindow(opts) {
   return w;
 }
 
-async function openPath(path, { line } = {}) {
+async function openPath(path, { line, id } = {}) {
   const existing = windows.find((w) => w.path === path);
   if (existing) {
     existing.focus();
@@ -326,8 +365,8 @@ async function openPath(path, { line } = {}) {
     return existing;
   }
   try {
-    const f = await api.files.read(path);
-    const w = addWindow({ path: f.path, text: f.content, mtimeMs: f.mtimeMs });
+    const f = await api.files.read(path, { id });
+    const w = addWindow({ path: f.path, text: f.content, mtimeMs: f.mtimeMs, id: f.id ?? null });
     rememberFolder(dirOf(f.path));
     if (line) w.goToLine(line);
     saveSession();
@@ -347,6 +386,10 @@ function watchFolder(folder) {
   }
   const close = api.files.watch(folder, ({ path }) => {
     for (const w of windows) if (w.path === path) w.reloadFromDisk().catch(() => {});
+  }, false, () => {
+    // the folder itself was renamed, moved or deleted: each file finds its new place (or not)
+    watchers.delete(folder);
+    for (const w of windows) if (w.path && dirOf(w.path) === folder) w.reloadFromDisk().catch(() => {});
   });
   watchers.set(folder, { close, count: 1 });
 }
@@ -385,7 +428,7 @@ async function restoreSession() {
   applyFontSize();
   for (const snap of s.windows ?? []) {
     if (snap.path && !snap.dirty) {
-      const w = await openPath(snap.path);
+      const w = await openPath(snap.path, { id: snap.id });
       if (w) {
         w.place(snap.geometry);
         w.ta.setSelectionRange(snap.cursor ?? 0, snap.cursor ?? 0);
@@ -394,13 +437,15 @@ async function restoreSession() {
       // unsaved work: restore the text, check whether the file moved on since
       let mtimeMs = snap.mtimeMs;
       let changed = false;
+      let path = snap.path;
       if (snap.path) {
         try {
-          const f = await api.files.read(snap.path);
+          const f = await api.files.read(snap.path, { id: snap.id });
           changed = f.mtimeMs !== snap.mtimeMs;
+          path = f.path; // it may have been renamed while iEdit was closed
         } catch {}
       }
-      const w = addWindow({ path: snap.path, text: snap.text ?? '', mtimeMs, dirty: !!snap.dirty, geometry: snap.geometry, cursor: snap.cursor, title: snap.untitled });
+      const w = addWindow({ path, id: snap.id ?? null, text: snap.text ?? '', mtimeMs, dirty: !!snap.dirty, geometry: snap.geometry, cursor: snap.cursor, title: snap.untitled });
       w.changedOnDisk = changed;
       w.updateStatus();
     }
@@ -588,6 +633,7 @@ async function filesInScope() {
         const r = await api.files.read(f.path);
         f.text = r.content;
         f.mtimeMs = r.mtimeMs;
+        f.id = r.id;
       } catch {
         f.text = null;
       }
@@ -640,7 +686,7 @@ async function replaceEverywhere() {
       p.f.win.setDirty(true);
     } else {
       try {
-        await api.files.write(p.f.path, p.text, { baseMtime: p.f.mtimeMs });
+        await api.files.write(p.f.path, p.text, { baseMtime: p.f.mtimeMs, id: p.f.id });
         saved++;
       } catch (err) {
         notice(`${p.f.path}: ${err.message}`, 'error');
