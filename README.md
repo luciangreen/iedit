@@ -23,6 +23,7 @@ To open files straight away: `/apps/iedit/?open=path/to/file.pl&open=other.md&li
   - Open windows, their positions and any unsaved text are kept. If the page closes, everything comes back next time.
   - If a file changed on disk since you opened it, saving asks before overwriting.
   - A window with no unsaved changes refreshes when its file changes on disk.
+  - If a file (or its folder) is renamed or moved in the Finder while it is open, iEdit follows it to its new name and saves there. If it was deleted, your text stays in the window, and saving offers to put it somewhere else. (Needs a LucianOS with file ids.)
 - **Find and replace** in this file, in all open files, or in every matching file of a folder (for example `*.pl, *.txt`).
   - Options: same case, words only, and regular expressions.
   - A helper menu inserts common patterns, such as or, not followed by, and groups, which you use as `$1` in Replace.
