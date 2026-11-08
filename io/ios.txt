@@ -1,0 +1,402 @@
+iEdit: 200 inputs and outputs, from real runs (npm run ios writes this file; npm test checks it).
+
+1. buildRegex("foo(", {"caseSensitive":true,"wholeWord":false,"regex":false})
+   => {"source":"foo\\(","flags":"gm"}
+2. findAll("List meditates finds dog.\nAnd the teacher music a and.\nTree house thinks.", "a", {"caseSensitive":true,"wholeWord":true,"regex":false})
+   => [{"index":48,"length":1,"line":2,"col":23,"text":"And the teacher music a and."}]
+3. replaceAll("Thinks garden sells about house book meditates idea.", "o", "$&$&", {"regex":true,"wholeWord":false})
+   => {"text":"Thinks garden sells aboout hoouse booook meditates idea.","count":4}
+4. fileMatcher("*.js", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["b.js"]
+5. languageFor("x.py")
+   => "plain"
+6. highlight("# Title\n\nSome *text* here.", "markdown")
+   => "<span class=\"t-heading\"># Title</span>\n\nSome *text* here."
+7. countStats("Person prolog the logic.", 1)
+   => {"chars":24,"words":4,"lines":1,"line":1,"col":2}
+8. offsetAtPoint("music dog meditates teacher runs buys\ndata buys data proof value reads\ntrue\nfalse with", {"x":280,"y":15,"lineHeight":20,"charWidth":8,"padLeft":6,"padTop":4,"scrollTop":0})
+   => 34
+9. dropPosition("tree\nteacher\nsells with", 12)
+   => {"at":13,"prefix":""}
+10. buildRegex("cat", {"caseSensitive":false,"wholeWord":false,"regex":true})
+   => {"source":"cat","flags":"gim"}
+11. findAll("False thinks the sells about.", "a", {"caseSensitive":true,"wholeWord":true,"regex":true})
+   => []
+12. replaceAll("Buys sells reads with with.", "the", "$&$&", {"regex":true,"wholeWord":false})
+   => {"text":"Buys sells reads with with.","count":0}
+13. fileMatcher("!*.md", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => []
+14. languageFor("style.css")
+   => "js"
+15. highlight("main :- writeln(\"hi\"), X is 1 + 2.", "prolog")
+   => "main <span class=\"t-keyword\">:-</span> <span class=\"t-functor\">writeln</span>(<span class=\"t-string\">\"hi\"</span>), <span class=\"t-var\">X</span> <span class=\"t-keyword\">is</span> <span class=\"t-number\">1</span> + <span class=\"t-number\">2</span>."
+16. countStats("Dog quickly meditates.", 19)
+   => {"chars":22,"words":3,"lines":1,"line":1,"col":20}
+17. offsetAtPoint("true blue", {"x":84,"y":7,"lineHeight":20,"charWidth":8,"padLeft":0,"padTop":0,"scrollTop":20})
+   => 9
+18. dropPosition("runs data true number sells", 5)
+   => {"at":27,"prefix":"\n"}
+19. buildRegex("\\d+", {"caseSensitive":true,"wholeWord":true,"regex":true})
+   => {"source":"(?<![\\w])(?:\\d+)(?![\\w])","flags":"gm"}
+20. findAll("A quickly writes happy blue tree music the simple.\nFalse about finds buys quickly.\nAbout house blue student.", "a", {"caseSensitive":false,"wholeWord":false,"regex":true})
+   => [{"index":0,"length":1,"line":1,"col":1,"text":"A quickly writes happy blue tree music the simple."},{"index":18,"length":1,"line":1,"col":19,"text":"A quickly writes happy blue tree music the simple."},{"index":52,"length":1,"line":2,"col":2,"text":"False about finds buys quickly."},{"index":57,"length":1,"line":2,"col":7,"text":"False about finds buys quickly."},{"index":83,"length":1,"line":3,"col":1,"text":"About house blue student."}]
+21. replaceAll("Finds true number green green.", "(\\w+)ing", "THE", {"regex":false,"wholeWord":false})
+   => {"text":"Finds true number green green.","count":0}
+22. fileMatcher("", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"]
+23. languageFor("notes.txt")
+   => "plain"
+24. highlight("main :- writeln(\"hi\"), X is 1 + 2.", "prolog")
+   => "main <span class=\"t-keyword\">:-</span> <span class=\"t-functor\">writeln</span>(<span class=\"t-string\">\"hi\"</span>), <span class=\"t-var\">X</span> <span class=\"t-keyword\">is</span> <span class=\"t-number\">1</span> + <span class=\"t-number\">2</span>."
+25. countStats("The meditates thinks number thinks about value student.", 6)
+   => {"chars":55,"words":8,"lines":1,"line":1,"col":7}
+26. offsetAtPoint("happy about tree blue logic\n\tindented", {"x":400,"y":118,"lineHeight":20,"charWidth":8,"padLeft":0,"padTop":4,"scrollTop":0})
+   => 37
+27. dropPosition("with tree meditates the\ncat list", 18)
+   => {"at":24,"prefix":""}
+28. buildRegex("cat", {"caseSensitive":true,"wholeWord":false,"regex":true})
+   => {"source":"cat","flags":"gm"}
+29. findAll("List apple student happy teacher buys sells.", "e.", {"caseSensitive":false,"wholeWord":false,"regex":false})
+   => []
+30. replaceAll("True data happy.", "o", "", {"regex":false,"wholeWord":true})
+   => {"text":"True data happy.","count":0}
+31. fileMatcher("*.pl", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["a.pl"]
+32. languageFor("a.pl")
+   => "prolog"
+33. highlight("{\"a\": 1, \"b\": [true, null]}", "json")
+   => "{\"a\": 1, \"b\": [true, null]}"
+34. countStats("With algorithm buys.\nAnd house student tree person garden true blue writes.", 13)
+   => {"chars":75,"words":12,"lines":2,"line":1,"col":14}
+35. offsetAtPoint("simple\nquickly data true number idea prolog\ngarden the value\nhappy prolog prolog a\n\tindented", {"x":382,"y":29,"lineHeight":20,"charWidth":8,"padLeft":0,"padTop":0,"scrollTop":0})
+   => 43
+36. dropPosition("and apple number happy\ncat book number false\nprolog teacher list", 37)
+   => {"at":45,"prefix":""}
+37. buildRegex("x|y", {"caseSensitive":false,"wholeWord":true,"regex":false})
+   => {"source":"(?<![\\w])(?:x\\|y)(?![\\w])","flags":"gim"}
+38. findAll("A false tree cat.\nNumber finds reads house number house.\nApple blue blue.", "a", {"caseSensitive":false,"wholeWord":false,"regex":true})
+   => [{"index":0,"length":1,"line":1,"col":1,"text":"A false tree cat."},{"index":3,"length":1,"line":1,"col":4,"text":"A false tree cat."},{"index":14,"length":1,"line":1,"col":15,"text":"A false tree cat."},{"index":33,"length":1,"line":2,"col":16,"text":"Number finds reads house number house."},{"index":57,"length":1,"line":3,"col":1,"text":"Apple blue blue."}]
+39. replaceAll("Student runs value runs.", "a", "", {"regex":true,"wholeWord":false})
+   => {"text":"Student runs vlue runs.","count":1}
+40. fileMatcher("*.txt", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["notes.txt"]
+41. languageFor("notes.txt")
+   => "plain"
+42. highlight("# Title\n\nSome *text* here.", "markdown")
+   => "<span class=\"t-heading\"># Title</span>\n\nSome *text* here."
+43. countStats("Data idea data dog list.", 4)
+   => {"chars":24,"words":5,"lines":1,"line":1,"col":5}
+44. offsetAtPoint("prolog data green data\nfinds\napple with\nblue runs simple", {"x":167,"y":18,"lineHeight":20,"charWidth":8,"padLeft":6,"padTop":4,"scrollTop":0})
+   => 20
+45. dropPosition("with and happy teacher\nalgorithm\nalgorithm", 14)
+   => {"at":23,"prefix":""}
+46. buildRegex("word", {"caseSensitive":true,"wholeWord":true,"regex":true})
+   => {"source":"(?<![\\w])(?:word)(?![\\w])","flags":"gm"}
+47. findAll("Number prolog writes tree a.", "e.", {"caseSensitive":false,"wholeWord":true,"regex":false})
+   => []
+48. replaceAll("The green prolog.", "o", "[$1]", {"regex":false,"wholeWord":false})
+   => {"text":"The green pr[$1]l[$1]g.","count":2}
+49. fileMatcher("README*", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["README.md"]
+50. languageFor("x.py")
+   => "plain"
+51. highlight("main :- writeln(\"hi\"), X is 1 + 2.", "prolog")
+   => "main <span class=\"t-keyword\">:-</span> <span class=\"t-functor\">writeln</span>(<span class=\"t-string\">\"hi\"</span>), <span class=\"t-var\">X</span> <span class=\"t-keyword\">is</span> <span class=\"t-number\">1</span> + <span class=\"t-number\">2</span>."
+52. countStats("With happy runs writes number dog data.\nBlue and apple logic value happy.\nProof true tree house simple.", 64)
+   => {"chars":103,"words":18,"lines":3,"line":2,"col":25}
+53. offsetAtPoint("book", {"x":191,"y":59,"lineHeight":20,"charWidth":8,"padLeft":0,"padTop":0,"scrollTop":20})
+   => 4
+54. dropPosition("writes false about green true\ngreen green simple\nproof garden false", 27)
+   => {"at":30,"prefix":""}
+55. buildRegex("x|y", {"caseSensitive":true,"wholeWord":true,"regex":true})
+   => {"source":"(?<![\\w])(?:x|y)(?![\\w])","flags":"gm"}
+56. findAll("With idea quickly meditates buys.\nStudent dog thinks writes tree sells tree about green.\nData person writes quickly thinks a about.", "the", {"caseSensitive":true,"wholeWord":true,"regex":false})
+   => []
+57. replaceAll("Sells music happy sells.", "(\\w+)ing", "$&$&", {"regex":false,"wholeWord":true})
+   => {"text":"Sells music happy sells.","count":0}
+58. fileMatcher("README*", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["README.md"]
+59. languageFor("page.html")
+   => "html"
+60. highlight("def f(x):\n    return x + 1  # add", "python")
+   => "def f(x):\n    return x + 1  # add"
+61. countStats("Green logic house false quickly house false.", 44)
+   => {"chars":44,"words":7,"lines":1,"line":1,"col":45}
+62. offsetAtPoint("finds teacher garden false person\nmusic\nnumber house apple number prolog happy\nhappy meditates\nfalse\n\tindented", {"x":150,"y":0,"lineHeight":20,"charWidth":8,"padLeft":6,"padTop":4,"scrollTop":20})
+   => 18
+63. dropPosition("data\nlist runs student simple\nbuys", 32)
+   => {"at":34,"prefix":"\n"}
+64. buildRegex("\\d+", {"caseSensitive":true,"wholeWord":false,"regex":false})
+   => {"source":"\\\\d\\+","flags":"gm"}
+65. findAll("Writes algorithm green a writes book teacher algorithm.", "the", {"caseSensitive":false,"wholeWord":true,"regex":true})
+   => []
+66. replaceAll("Garden quickly apple number cat cat.", "the", "$&$&", {"regex":false,"wholeWord":true})
+   => {"text":"Garden quickly apple number cat cat.","count":0}
+67. fileMatcher("!*.md", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => []
+68. languageFor("a.pl")
+   => "prolog"
+69. highlight("main :- writeln(\"hi\"), X is 1 + 2.", "prolog")
+   => "main <span class=\"t-keyword\">:-</span> <span class=\"t-functor\">writeln</span>(<span class=\"t-string\">\"hi\"</span>), <span class=\"t-var\">X</span> <span class=\"t-keyword\">is</span> <span class=\"t-number\">1</span> + <span class=\"t-number\">2</span>."
+70. countStats("Proof sells thinks green finds.", 12)
+   => {"chars":31,"words":5,"lines":1,"line":1,"col":13}
+71. offsetAtPoint("person buys meditates\nfinds\nteacher true meditates\n\tindented", {"x":384,"y":85,"lineHeight":20,"charWidth":8,"padLeft":6,"padTop":0,"scrollTop":20})
+   => 60
+72. dropPosition("a list student", 9)
+   => {"at":14,"prefix":"\n"}
+73. buildRegex("cat", {"caseSensitive":true,"wholeWord":true,"regex":true})
+   => {"source":"(?<![\\w])(?:cat)(?![\\w])","flags":"gm"}
+74. findAll("Writes the logic buys simple and and.", "o\\w", {"caseSensitive":false,"wholeWord":true,"regex":false})
+   => []
+75. replaceAll("Garden about algorithm.", "(\\w+)ing", "THE", {"regex":true,"wholeWord":false})
+   => {"text":"Garden about algorithm.","count":0}
+76. fileMatcher("*", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"]
+77. languageFor("x.py")
+   => "plain"
+78. highlight("def f(x):\n    return x + 1  # add", "python")
+   => "def f(x):\n    return x + 1  # add"
+79. countStats("Sells data house person quickly false blue and quickly.\nValue data student proof and tree the teacher.\nMusic with dog about happy dog.", 72)
+   => {"chars":134,"words":23,"lines":3,"line":2,"col":17}
+80. offsetAtPoint("blue\nblue value false sells happy\nidea cat algorithm list a\nbook with logic garden tree\n\tindented", {"x":9,"y":46,"lineHeight":20,"charWidth":8,"padLeft":0,"padTop":4,"scrollTop":0})
+   => 35
+81. dropPosition("true algorithm cat", 6)
+   => {"at":18,"prefix":"\n"}
+82. buildRegex("\\d+", {"caseSensitive":false,"wholeWord":true,"regex":true})
+   => {"source":"(?<![\\w])(?:\\d+)(?![\\w])","flags":"gim"}
+83. findAll("And reads thinks algorithm happy the.\nList green happy value.", "the", {"caseSensitive":true,"wholeWord":false,"regex":true})
+   => [{"index":33,"length":3,"line":1,"col":34,"text":"And reads thinks algorithm happy the."}]
+84. replaceAll("Person prolog person.", "the", "", {"regex":true,"wholeWord":false})
+   => {"text":"Person prolog person.","count":0}
+85. fileMatcher("*.txt", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["notes.txt"]
+86. languageFor("README.md")
+   => "markdown"
+87. highlight("const x = 1; // note\nfunction f(a) { return a * 2; }", "js")
+   => "<span class=\"t-keyword\">const</span> x = <span class=\"t-number\">1</span>; <span class=\"t-comment\">// note</span>\n<span class=\"t-keyword\">function</span> <span class=\"t-functor\">f</span>(a) { <span class=\"t-keyword\">return</span> a * <span class=\"t-number\">2</span>; }"
+88. countStats("Sells apple logic dog.\nRuns sells person runs meditates dog.", 42)
+   => {"chars":60,"words":10,"lines":2,"line":2,"col":20}
+89. offsetAtPoint("logic idea tree dog", {"x":161,"y":114,"lineHeight":20,"charWidth":8,"padLeft":0,"padTop":0,"scrollTop":20})
+   => 19
+90. dropPosition("number\ncat the\nprolog", 1)
+   => {"at":7,"prefix":""}
+91. buildRegex("foo(", {"caseSensitive":true,"wholeWord":true,"regex":true})
+   => {"error":"Regular expression problem: /(?<![\\w])(?:foo()(?![\\w])/gm: Unterminated group"}
+92. findAll("House about meditates dog logic cat teacher sells.\nSimple idea person list buys.", "e.", {"caseSensitive":true,"wholeWord":true,"regex":false})
+   => []
+93. replaceAll("Number tree simple buys apple sells dog meditates.", "a", "THE", {"regex":false,"wholeWord":true})
+   => {"text":"Number tree simple buys apple sells dog meditates.","count":0}
+94. fileMatcher("*.txt", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["notes.txt"]
+95. languageFor("README.md")
+   => "markdown"
+96. highlight("{\"a\": 1, \"b\": [true, null]}", "json")
+   => "{\"a\": 1, \"b\": [true, null]}"
+97. countStats("Apple green thinks teacher meditates writes finds.", 23)
+   => {"chars":50,"words":7,"lines":1,"line":1,"col":24}
+98. offsetAtPoint("garden dog a data number\nruns runs the tree proof", {"x":87,"y":77,"lineHeight":20,"charWidth":8,"padLeft":6,"padTop":0,"scrollTop":20})
+   => 35
+99. dropPosition("false prolog buys sells\ndata data true sells finds", 9)
+   => {"at":24,"prefix":""}
+100. buildRegex("a.b", {"caseSensitive":false,"wholeWord":true,"regex":true})
+   => {"source":"(?<![\\w])(?:a.b)(?![\\w])","flags":"gim"}
+101. findAll("Data house proof.\nThinks value book sells writes meditates buys.", "a", {"caseSensitive":false,"wholeWord":false,"regex":false})
+   => [{"index":1,"length":1,"line":1,"col":2,"text":"Data house proof."},{"index":3,"length":1,"line":1,"col":4,"text":"Data house proof."},{"index":26,"length":1,"line":2,"col":9,"text":"Thinks value book sells writes meditates buys."},{"index":54,"length":1,"line":2,"col":37,"text":"Thinks value book sells writes meditates buys."}]
+102. replaceAll("Thinks green person number.", "(\\w+)ing", "THE", {"regex":false,"wholeWord":false})
+   => {"text":"Thinks green person number.","count":0}
+103. fileMatcher("*.js", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["b.js"]
+104. languageFor("notes.txt")
+   => "plain"
+105. highlight("const x = 1; // note\nfunction f(a) { return a * 2; }", "js")
+   => "<span class=\"t-keyword\">const</span> x = <span class=\"t-number\">1</span>; <span class=\"t-comment\">// note</span>\n<span class=\"t-keyword\">function</span> <span class=\"t-functor\">f</span>(a) { <span class=\"t-keyword\">return</span> a * <span class=\"t-number\">2</span>; }"
+106. countStats("Writes a prolog logic tree.", 18)
+   => {"chars":27,"words":5,"lines":1,"line":1,"col":19}
+107. offsetAtPoint("data finds\ndog teacher data\nteacher happy green idea\nwith list\nruns apple meditates student the true", {"x":320,"y":78,"lineHeight":20,"charWidth":8,"padLeft":6,"padTop":0,"scrollTop":20})
+   => 100
+108. dropPosition("with", 0)
+   => {"at":0,"prefix":""}
+109. buildRegex("word", {"caseSensitive":false,"wholeWord":true,"regex":false})
+   => {"source":"(?<![\\w])(?:word)(?![\\w])","flags":"gim"}
+110. findAll("With number sells.", "Book", {"caseSensitive":true,"wholeWord":false,"regex":false})
+   => []
+111. replaceAll("And reads book student with reads about with.", "o", "THE", {"regex":false,"wholeWord":true})
+   => {"text":"And reads book student with reads about with.","count":0}
+112. fileMatcher("", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"]
+113. languageFor("data.json")
+   => "js"
+114. highlight("# Title\n\nSome *text* here.", "markdown")
+   => "<span class=\"t-heading\"># Title</span>\n\nSome *text* here."
+115. countStats("Finds and proof proof person.\nRuns simple true list reads apple proof prolog.\nPerson and algorithm false green idea book teacher.\nWith garden tree idea value runs.", 93)
+   => {"chars":163,"words":27,"lines":4,"line":3,"col":16}
+116. offsetAtPoint("simple\nand data happy green dog proof\nhouse finds\nreads sells logic with\n\tindented", {"x":95,"y":61,"lineHeight":20,"charWidth":8,"padLeft":0,"padTop":0,"scrollTop":0})
+   => 62
+117. dropPosition("blue\nthe garden value student\nruns house runs prolog", 22)
+   => {"at":30,"prefix":""}
+118. buildRegex("\\d+", {"caseSensitive":false,"wholeWord":false,"regex":true})
+   => {"source":"\\d+","flags":"gim"}
+119. findAll("Proof algorithm cat simple.", "Book", {"caseSensitive":false,"wholeWord":true,"regex":false})
+   => []
+120. replaceAll("Reads happy blue.", "a", "$&$&", {"regex":false,"wholeWord":true})
+   => {"text":"Reads happy blue.","count":0}
+121. fileMatcher("*.js", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["b.js"]
+122. languageFor("notes.txt")
+   => "plain"
+123. highlight("# Title\n\nSome *text* here.", "markdown")
+   => "<span class=\"t-heading\"># Title</span>\n\nSome *text* here."
+124. countStats("Simple blue proof buys apple cat true and tree.\nPerson happy meditates.\nSimple person teacher runs proof dog person music.\nHappy happy cat runs.", 47)
+   => {"chars":144,"words":24,"lines":4,"line":1,"col":48}
+125. offsetAtPoint("the proof\nblue value", {"x":307,"y":14,"lineHeight":20,"charWidth":8,"padLeft":6,"padTop":4,"scrollTop":20})
+   => 20
+126. dropPosition("a data idea student", 21)
+   => {"at":19,"prefix":"\n"}
+127. buildRegex("word", {"caseSensitive":false,"wholeWord":false,"regex":false})
+   => {"source":"word","flags":"gim"}
+128. findAll("List value value logic the the dog.\nList meditates prolog finds teacher house tree sells.\nThinks prolog number cat number.", "e.", {"caseSensitive":false,"wholeWord":false,"regex":true})
+   => [{"index":9,"length":2,"line":1,"col":10,"text":"List value value logic the the dog."},{"index":15,"length":2,"line":1,"col":16,"text":"List value value logic the the dog."},{"index":25,"length":2,"line":1,"col":26,"text":"List value value logic the the dog."},{"index":29,"length":2,"line":1,"col":30,"text":"List value value logic the the dog."},{"index":42,"length":2,"line":2,"col":7,"text":"List meditates prolog finds teacher house tree sells."},{"index":48,"length":2,"line":2,"col":13,"text":"List meditates prolog finds teacher house tree sells."},{"index":65,"length":2,"line":2,"col":30,"text":"List meditates prolog finds teacher house tree sells."},{"index":69,"length":2,"line":2,"col":34,"text":"List meditates prolog finds teacher house tree sells."},{"index":76,"length":2,"line":2,"col":41,"text":"List meditates prolog finds teacher house tree sells."},{"index":80,"length":2,"line":2,"col":45,"text":"List meditates prolog finds teacher house tree sells."},{"index":84,"length":2,"line":2,"col":49,"text":"List meditates prolog finds teacher house tree sells."},{"index":108,"length":2,"line":3,"col":19,"text":"Thinks prolog number cat number."},{"index":119,"length":2,"line":3,"col":30,"text":"Thinks prolog number cat number."}]
+129. replaceAll("Quickly house apple blue a book with list runs.", "(\\w+)ing", "", {"regex":true,"wholeWord":true})
+   => {"text":"Quickly house apple blue a book with list runs.","count":0}
+130. fileMatcher("README*", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["README.md"]
+131. languageFor("data.json")
+   => "js"
+132. highlight("const x = 1; // note\nfunction f(a) { return a * 2; }", "js")
+   => "<span class=\"t-keyword\">const</span> x = <span class=\"t-number\">1</span>; <span class=\"t-comment\">// note</span>\n<span class=\"t-keyword\">function</span> <span class=\"t-functor\">f</span>(a) { <span class=\"t-keyword\">return</span> a * <span class=\"t-number\">2</span>; }"
+133. countStats("Thinks meditates about.\nLogic the house.\nFinds a data quickly number person writes thinks.", 11)
+   => {"chars":90,"words":14,"lines":3,"line":1,"col":12}
+134. offsetAtPoint("a and green\nthe value", {"x":133,"y":112,"lineHeight":20,"charWidth":8,"padLeft":0,"padTop":0,"scrollTop":20})
+   => 21
+135. dropPosition("algorithm buys music list value\nprolog", 8)
+   => {"at":32,"prefix":""}
+136. buildRegex("cat", {"caseSensitive":false,"wholeWord":true,"regex":true})
+   => {"source":"(?<![\\w])(?:cat)(?![\\w])","flags":"gim"}
+137. findAll("Runs number false reads house.\nThinks and finds book prolog and cat runs.\nGreen prolog writes data number finds number.", "Book", {"caseSensitive":true,"wholeWord":false,"regex":true})
+   => []
+138. replaceAll("The apple happy writes sells reads prolog proof.", "a", "[$1]", {"regex":false,"wholeWord":true})
+   => {"text":"The apple happy writes sells reads prolog proof.","count":0}
+139. fileMatcher("README*", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["README.md"]
+140. languageFor("style.css")
+   => "js"
+141. highlight("<p class=\"x\">Hi</p>", "html")
+   => "<span class=\"t-tag\">&lt;p</span> <span class=\"t-attr\">class</span>=<span class=\"t-string\">\"x\"</span><span class=\"t-tag\">&gt;</span>Hi<span class=\"t-tag\">&lt;/p</span><span class=\"t-tag\">&gt;</span>"
+142. countStats("Blue teacher happy cat blue house finds.\nSimple and false runs reads apple.\nMusic book false finds.", 41)
+   => {"chars":99,"words":17,"lines":3,"line":2,"col":1}
+143. offsetAtPoint("tree\nruns meditates runs meditates and sells\na writes true person", {"x":304,"y":118,"lineHeight":20,"charWidth":8,"padLeft":0,"padTop":0,"scrollTop":0})
+   => 65
+144. dropPosition("writes value value\nbuys about\nand algorithm", 23)
+   => {"at":30,"prefix":""}
+145. buildRegex("word", {"caseSensitive":false,"wholeWord":false,"regex":true})
+   => {"source":"word","flags":"gim"}
+146. findAll("Tree the cat idea happy teacher green tree.\nTeacher book buys garden.\nAbout value sells idea house.", "Book", {"caseSensitive":false,"wholeWord":false,"regex":false})
+   => [{"index":52,"length":4,"line":2,"col":9,"text":"Teacher book buys garden."}]
+147. replaceAll("Teacher blue number quickly house sells.", "a", "", {"regex":false,"wholeWord":true})
+   => {"text":"Teacher blue number quickly house sells.","count":0}
+148. fileMatcher("*.{js,md}", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => []
+149. languageFor("data.json")
+   => "js"
+150. highlight("<p class=\"x\">Hi</p>", "html")
+   => "<span class=\"t-tag\">&lt;p</span> <span class=\"t-attr\">class</span>=<span class=\"t-string\">\"x\"</span><span class=\"t-tag\">&gt;</span>Hi<span class=\"t-tag\">&lt;/p</span><span class=\"t-tag\">&gt;</span>"
+151. countStats("True garden teacher idea number true and music and.", 36)
+   => {"chars":51,"words":9,"lines":1,"line":1,"col":37}
+152. offsetAtPoint("simple runs simple blue a\nlogic person green thinks cat simple\nthinks algorithm", {"x":162,"y":6,"lineHeight":20,"charWidth":8,"padLeft":6,"padTop":0,"scrollTop":0})
+   => 20
+153. dropPosition("prolog data", 9)
+   => {"at":11,"prefix":"\n"}
+154. buildRegex("[A-Z]", {"caseSensitive":true,"wholeWord":true,"regex":true})
+   => {"source":"(?<![\\w])(?:[A-Z])(?![\\w])","flags":"gm"}
+155. findAll("Thinks runs data apple algorithm.\nGreen list number.\nQuickly happy student a list house student.", "o\\w", {"caseSensitive":true,"wholeWord":true,"regex":false})
+   => []
+156. replaceAll("Prolog tree runs green proof.", "a", "", {"regex":false,"wholeWord":false})
+   => {"text":"Prolog tree runs green proof.","count":0}
+157. fileMatcher("README*", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["README.md"]
+158. languageFor("notes.txt")
+   => "plain"
+159. highlight("def f(x):\n    return x + 1  # add", "python")
+   => "def f(x):\n    return x + 1  # add"
+160. countStats("House sells list house happy writes proof number data.\nStudent true dog.\nSimple cat music prolog list green proof idea blue.\nWrites prolog sells dog the number book.", 121)
+   => {"chars":165,"words":28,"lines":4,"line":3,"col":49}
+161. offsetAtPoint("and tree person book quickly\nlist\nfalse\nalgorithm logic", {"x":62,"y":58,"lineHeight":20,"charWidth":8,"padLeft":0,"padTop":0,"scrollTop":0})
+   => 39
+162. dropPosition("teacher sells runs", 6)
+   => {"at":18,"prefix":"\n"}
+163. buildRegex("[A-Z]", {"caseSensitive":false,"wholeWord":false,"regex":false})
+   => {"source":"\\[A-Z\\]","flags":"gim"}
+164. findAll("Person green cat algorithm blue simple a.\nList music finds cat with.\nBuys buys logic with prolog data student happy.", "Book", {"caseSensitive":false,"wholeWord":false,"regex":true})
+   => []
+165. replaceAll("Value idea writes.", "a", "", {"regex":false,"wholeWord":true})
+   => {"text":"Value idea writes.","count":0}
+166. fileMatcher("*.txt", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["notes.txt"]
+167. languageFor("a.pl")
+   => "prolog"
+168. highlight("def f(x):\n    return x + 1  # add", "python")
+   => "def f(x):\n    return x + 1  # add"
+169. countStats("Quickly book book house finds a.", 8)
+   => {"chars":32,"words":6,"lines":1,"line":1,"col":9}
+170. offsetAtPoint("buys student thinks\nsimple prolog\nbuys writes buys true value\nand quickly about apple", {"x":11,"y":6,"lineHeight":20,"charWidth":8,"padLeft":6,"padTop":4,"scrollTop":0})
+   => 1
+171. dropPosition("person\nmeditates idea person true sells\nmusic and proof list", 18)
+   => {"at":40,"prefix":""}
+172. buildRegex("a.b", {"caseSensitive":true,"wholeWord":true,"regex":true})
+   => {"source":"(?<![\\w])(?:a.b)(?![\\w])","flags":"gm"}
+173. findAll("Writes about proof a apple logic and quickly.\nApple data book prolog true number music blue simple.\nWrites about teacher writes green simple music garden book.", "Book", {"caseSensitive":false,"wholeWord":true,"regex":false})
+   => [{"index":57,"length":4,"line":2,"col":12,"text":"Apple data book prolog true number music blue simple."},{"index":154,"length":4,"line":3,"col":55,"text":"Writes about teacher writes green simple music garden book."}]
+174. replaceAll("Number algorithm thinks prolog quickly happy.", "a", "THE", {"regex":true,"wholeWord":true})
+   => {"text":"Number algorithm thinks prolog quickly happy.","count":0}
+175. fileMatcher("", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"]
+176. languageFor("style.css")
+   => "js"
+177. highlight("const x = 1; // note\nfunction f(a) { return a * 2; }", "js")
+   => "<span class=\"t-keyword\">const</span> x = <span class=\"t-number\">1</span>; <span class=\"t-comment\">// note</span>\n<span class=\"t-keyword\">function</span> <span class=\"t-functor\">f</span>(a) { <span class=\"t-keyword\">return</span> a * <span class=\"t-number\">2</span>; }"
+178. countStats("Value value about list apple meditates.\nSells dog proof reads proof a list meditates with.\nList value student runs writes quickly garden.", 60)
+   => {"chars":137,"words":22,"lines":3,"line":2,"col":21}
+179. offsetAtPoint("reads\nand tree about\ntrue apple number student", {"x":395,"y":38,"lineHeight":20,"charWidth":8,"padLeft":0,"padTop":0,"scrollTop":20})
+   => 46
+180. dropPosition("cat", -1)
+   => {"at":3,"prefix":"\n"}
+181. buildRegex("foo(", {"caseSensitive":false,"wholeWord":true,"regex":false})
+   => {"source":"(?<![\\w])(?:foo\\()(?![\\w])","flags":"gim"}
+182. findAll("Runs the house.\nBuys with logic.", "o\\w", {"caseSensitive":false,"wholeWord":true,"regex":false})
+   => []
+183. replaceAll("Finds with house happy person book idea tree.", "the", "[$1]", {"regex":false,"wholeWord":false})
+   => {"text":"Finds with house happy person book idea tree.","count":0}
+184. fileMatcher("README*", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => ["README.md"]
+185. languageFor("x.py")
+   => "plain"
+186. highlight("const x = 1; // note\nfunction f(a) { return a * 2; }", "js")
+   => "<span class=\"t-keyword\">const</span> x = <span class=\"t-number\">1</span>; <span class=\"t-comment\">// note</span>\n<span class=\"t-keyword\">function</span> <span class=\"t-functor\">f</span>(a) { <span class=\"t-keyword\">return</span> a * <span class=\"t-number\">2</span>; }"
+187. countStats("Logic cat student true number book happy value.\nNumber person buys.", 63)
+   => {"chars":67,"words":11,"lines":2,"line":2,"col":16}
+188. offsetAtPoint("runs\nsells book a writes thinks\nquickly tree and\nthinks meditates", {"x":395,"y":65,"lineHeight":20,"charWidth":8,"padLeft":0,"padTop":4,"scrollTop":0})
+   => 65
+189. dropPosition("the prolog", -1)
+   => {"at":10,"prefix":"\n"}
+190. buildRegex("x|y", {"caseSensitive":false,"wholeWord":true,"regex":false})
+   => {"source":"(?<![\\w])(?:x\\|y)(?![\\w])","flags":"gim"}
+191. findAll("Student sells runs garden finds proof quickly.\nTeacher quickly garden happy and quickly reads.\nNumber value runs about buys meditates happy and meditates.", "o\\w", {"caseSensitive":true,"wholeWord":false,"regex":true})
+   => [{"index":34,"length":2,"line":1,"col":35,"text":"Student sells runs garden finds proof quickly."},{"index":115,"length":2,"line":3,"col":21,"text":"Number value runs about buys meditates happy and meditates."}]
+192. replaceAll("Reads runs sells algorithm with simple value.", "a", "$&$&", {"regex":true,"wholeWord":true})
+   => {"text":"Reads runs sells algorithm with simple value.","count":0}
+193. fileMatcher("!*.md", ["a.pl","b.js","README.md","x.py","data.json","page.html","notes.txt","Makefile","style.css","run.sh"])
+   => []
+194. languageFor("b.js")
+   => "js"
+195. highlight("const x = 1; // note\nfunction f(a) { return a * 2; }", "js")
+   => "<span class=\"t-keyword\">const</span> x = <span class=\"t-number\">1</span>; <span class=\"t-comment\">// note</span>\n<span class=\"t-keyword\">function</span> <span class=\"t-functor\">f</span>(a) { <span class=\"t-keyword\">return</span> a * <span class=\"t-number\">2</span>; }"
+196. countStats("Sells simple student runs proof.", 29)
+   => {"chars":32,"words":5,"lines":1,"line":1,"col":30}
+197. offsetAtPoint("sells blue garden data apple blue\ngarden happy false data\ngarden about algorithm logic", {"x":235,"y":64,"lineHeight":20,"charWidth":8,"padLeft":0,"padTop":0,"scrollTop":0})
+   => 86
+198. dropPosition("idea a", 4)
+   => {"at":6,"prefix":"\n"}
+199. buildRegex("x|y", {"caseSensitive":true,"wholeWord":true,"regex":false})
+   => {"source":"(?<![\\w])(?:x\\|y)(?![\\w])","flags":"gm"}
+200. findAll("Algorithm quickly apple false true logic buys teacher.\nTrue value false and teacher.\nHouse teacher a student value simple green buys with.", "a", {"caseSensitive":false,"wholeWord":true,"regex":true})
+   => [{"index":99,"length":1,"line":3,"col":15,"text":"House teacher a student value simple green buys with."}]
