@@ -74,3 +74,9 @@ test('status bar counts', () => {
   assert.deepEqual(countStats('one two\nthree', 9), { chars: 13, words: 3, lines: 2, line: 2, col: 2 });
   assert.deepEqual(countStats('', 0), { chars: 0, words: 0, lines: 1, line: 1, col: 1 });
 });
+
+test('regex replace works with lookarounds and named groups', () => {
+  assert.deepEqual(replaceAll('ab cb ab', buildRegex('(?<=a)b', { regex: true }), 'X', { regex: true }), { text: 'aX cb aX', count: 2 });
+  assert.deepEqual(replaceAll('ab cb', buildRegex('(?<x>c)(?=b)', { regex: true }), '<$<x>$$>', { regex: true }), { text: 'ab <c$>b', count: 1 });
+  assert.equal(replaceAt('ab ab', buildRegex('b(?= )', { regex: true }), 1, 'Y', { regex: true }).text, 'aY ab');
+});
